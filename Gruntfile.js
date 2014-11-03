@@ -56,7 +56,7 @@ module.exports = function(grunt) {
             ],
             dest: 'build/scripts/lib/'
           },
-          { expand: true, flatten: true, src: ['src/data/*'], dest: 'build/data/' }
+          { expand: true, flatten: true, src: ['src/data/*'], dest: 'build/data/' },
           { expand: true, flatten: true, src: ['src/images/*.svg'], dest: 'build/images/' },
           { expand: true, flatten: true, src: ['src/style/fonts/boomer/*'], dest: 'build/style/fonts/boomer/' },
           { expand: true, flatten: true, src: ['src/style/fonts/boomer_cond/*'], dest: 'build/style/fonts/boomer_cond/' },
@@ -139,6 +139,7 @@ module.exports = function(grunt) {
         },
         files: {
           'build/style/app.css'       : ['src/style/app.css'],
+          'build/style/fonts.css'     : ['src/style/fonts.css'],
           'build/style/normalize.css' : ['src/style/normalize.css' ],
           'build/style/skeleton.css'  : ['src/style/skeleton.css']
         }

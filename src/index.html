@@ -22,6 +22,13 @@
   <link rel="stylesheet" href="style/normalize.css">
 	<link rel="stylesheet" href="style/skeleton.css">
   <link rel="stylesheet" href="style/fonts.css">
+  <link rel="stylesheet" href="http://ajcdatawrap.s3-website-us-east-1.amazonaws.com/css/styles.css" type="text/css">
+  <link rel="stylesheet" href="http://ajcdatawrap.s3-website-us-east-1.amazonaws.com/css/janrainModals.css"> <!-- just the ENTIRE 4k line myajc master.css file bc the login screen css was messed up, fix it -->
+  <style>
+  .authentication-change .cmUserAnonymous, .authentication-change .cmUserAuthed { /*hide log in/log out until auth decides which one to display*/
+    display: none;
+  }
+  </style>
 
 	<!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,6 +36,15 @@
 
 </head>
 <body>
+  <script src="http://ajcdatawrap.s3-website-us-east-1.amazonaws.com/js/wrap.js"></script>
+
+  <div id="ajc-meter-modals"></div>
+
+  <div class="authentication-change">
+    <a class="header-text cmOpenJanrainModal cmUserAnonymous" href="#">LOG IN</a>
+    <a class="prepend-site header-text cmUserAuthed cmLogout" data-href="auth/logout" href="http://www.myajc.com/auth/logout">LOG OUT</a>
+  </div>
+
   <h1>My App</h1>
 
   <script src="scripts/lib/flatpage_stubs.js"></script>
@@ -41,6 +57,12 @@
   <!-- build:js scripts/main.js -->
 	<script src="scripts/main.js"></script>
   <!-- /build -->
+
+  <script type="text/javascript">
+  //load the HTML for the metering modals
+  $( "#ajc-meter-modals" ).load( "http://ajcdatawrap.s3-website-us-east-1.amazonaws.com/modals.html" );
+  </script>
+  <script src="http://ajcdatawrap.s3-website-us-east-1.amazonaws.com/js/access-meter.js"></script>
 
   <script>
   // Have to add flatpage_stubs.js above this script

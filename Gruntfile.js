@@ -66,6 +66,7 @@ module.exports = function(grunt) {
           { expand: true, flatten: true, src: ['src/style/fonts/boomerslab_extracond/*'], dest: 'build/style/fonts/boomerslab_extracond/' },
           { expand: true, flatten: true, src: ['src/style/fonts/publico/*'], dest: 'build/style/fonts/publico/' },
           { expand: true, flatten: true, src: ['bower/modernizr/modernizr.js'], dest: 'build/scripts/lib/' },
+          { expand: true, flatten: true, src: ['src/scripts/lib/modals.html.js'], dest: 'build/scripts/lib/' },
           { expand: true, flatten: true, src: ['src/scripts/lib/flatpage_stubs.js'], dest: 'build/scripts/lib/' },
           { expand: true, flatten: true, src: ['src/robots.txt'], dest: 'build/' }
         ]
@@ -102,7 +103,8 @@ module.exports = function(grunt) {
       },
       my_target: {
         files: {
-          'build/scripts/main.js'   : ['src/scripts/main.js']
+          'build/scripts/main.js'     : ['src/scripts/main.js'],
+          'build/scripts/lib/wrap.js' : ['src/scripts/lib/wrap.js']
         }
       }
     },
@@ -141,7 +143,8 @@ module.exports = function(grunt) {
           'build/style/app.css'       : ['src/style/app.css'],
           'build/style/fonts.css'     : ['src/style/fonts.css'],
           'build/style/normalize.css' : ['src/style/normalize.css' ],
-          'build/style/skeleton.css'  : ['src/style/skeleton.css']
+          'build/style/skeleton.css'  : ['src/style/skeleton.css'],
+          'build/style/modals.css'    : ['src/style/modals.css']
         }
       }
     },
@@ -200,6 +203,65 @@ module.exports = function(grunt) {
       build: {
         cwd: "build/",
         src: "**"
+      }
+    },
+
+    scrapehtml: {
+      options: {
+        els: [
+          //Janraid markup
+          '#returnSocial',
+          '#returnTraditional',
+          '#socialRegistration',
+          '#traditionalRegistration',
+          '#traditionalRegistrationBlank',
+          '#registrationSuccess',
+          '#registrationSuccessConfirmed',
+          '#forgotPassword',
+          '#forgotPasswordSuccess',
+          '#mergeAccounts',
+          '#traditionalAuthenticateMerge',
+          '#resendVerification',
+          '#resendVerificationSuccess',
+          '#pq-passage-quota-block',
+          '#pq-passage-quota-sticky',
+          '#pq-passage-quota-welcome',
+          // Not in the CMG docs, but required
+          '#signIn'
+        ],
+        url: 'http://www.myajc.com/api/wraps/v1/wrap/1486/?format=html'
+      },
+      defaults: {
+        dest: 'src/scripts/lib/modals.html.js'
+      }
+    },
+
+    scrapejs: {
+      options: {
+       url: 'http://www.myajc.com/api/wraps/v1/wrap/1486/?format=html',
+       srcBlacklist: [
+          // Skip JQuery and JQuery plugins
+          // 'common/javascript/core.premium.js',
+          // 'common/premium/js/hoverIntent.js',
+          // 'common/premium/js/dotdotdot.js'
+        ],
+        contentBlacklist: [
+          // Skip google tag manager
+          // 'var googletag = googletag || {},'
+        ]
+      },
+      defaults: {
+        dest: 'src/scripts/lib/wrap.js'
+      }
+    },
+
+    scrapecss: {
+      options: {
+        url: 'http://www.myajc.com/api/wraps/v1/wrap/1486/?format=html',
+        els: 'style'
+      },
+      wrap: {
+        dest: 'src/style/lib/modals.css'
       }
     },
 
@@ -299,12 +361,14 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-bowercopy');
   grunt.loadNpmTasks('grunt-express');
   grunt.loadNpmTasks('grunt-open');
+  grunt.loadNpmTasks('grunt-wrap-scrape');
 
-  grunt.registerTask('default', ['bowercopy','copy','uglify','cssmin','processhtml', 'htmlmin','s3']);
-  grunt.registerTask('build', ['bowercopy','copy','uglify','cssmin','processhtml', 'htmlmin']);
+  grunt.registerTask('default', ['wrap','bowercopy','copy','uglify','cssmin','processhtml', 'htmlmin','s3']);
+  grunt.registerTask('build', ['wrap','bowercopy','copy','uglify','cssmin','processhtml', 'htmlmin']);
   grunt.registerTask('deploy', ['s3']);
   grunt.registerTask('lint', ['jshint']);
   grunt.registerTask('server', ['express:dev','open:dev','watch:dev','express-keepalive']);
   grunt.registerTask('server:test', ['express:test','open:test','watch:test','express-keepalive']);
+  grunt.registerTask('wrap', ['scrapejs','scrapehtml','scrapecss']);
 };
 

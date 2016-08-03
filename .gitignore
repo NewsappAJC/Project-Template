@@ -9,6 +9,7 @@ lib-cov
 *.sublime-project
 *.sublime-workspace
 
+src/style/lib/
 pids
 logs
 results
